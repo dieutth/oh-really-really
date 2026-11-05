@@ -43,6 +43,9 @@
     .emergency-button:hover { background: #812e26; }
     .emergency-panel { position: fixed; z-index: 9; top: max(78px, calc(env(safe-area-inset-top) + 62px)); right: max(16px, env(safe-area-inset-right)); width: min(340px, calc(100vw - 32px)); padding: 20px; border: 1px solid #e6dece; border-radius: 16px; background: #fffdf9; box-shadow: 0 12px 32px rgb(52 43 29 / 18%); }
     .emergency-panel p { margin: 0 0 12px; }
+    .bridge-art { display: flex; align-items: center; justify-content: center; gap: clamp(12px, 5vw, 40px); margin: 12px 0 24px; padding: 20px; border-radius: 20px; background: #fff4f5; }
+    .bridge-art svg { width: min(48%, 210px); height: auto; }
+    .finger-heart { font-size: clamp(4rem, 18vw, 7rem); line-height: 1; }
     @media (max-width: 420px) { :root { font-size: 17px; } main { padding: 24px; } .riddle { font-size: 1.4rem; } }
   </style>
 </head>
@@ -84,6 +87,25 @@
       <form id="answer-four-form"><label for="answer-four">Babe's location answer</label><input id="answer-four" name="answer" type="text" autocomplete="off" required><button type="submit">Reveal the surprise</button><p class="message" id="message-four" aria-live="polite"></p></form>
       <div class="celebration" id="celebration" hidden><iframe src="https://tenor.com/embed/18749324" title="Happy cat sharing fish" loading="lazy" allowfullscreen></iframe></div>
     </section>
+
+    <section class="step" id="step-five" aria-labelledby="riddle-five" hidden>
+      <p class="step-label">Riddle 4</p>
+      <h2 class="riddle" id="riddle-five">What does this cute T-shirt say, and what Korean celebrity finger-heart pose is shown?</h2>
+      <div class="bridge-art" role="img" aria-label="A cute pink T-shirt with the word MODERN and a finger-heart hand gesture">
+        <svg viewBox="0 0 220 230" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M65 25 91 12h38l26 13 43 34-24 35-23-15v126H39V79L16 94-8 59l47-34 26 0Z" transform="translate(10 5)" fill="#ffb8cb" stroke="#d76b8b" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M91 13c2 18 12 28 19 28s17-10 19-28" fill="#fff4f5" stroke="#d76b8b" stroke-width="4" stroke-linejoin="round"/>
+          <text x="110" y="116" text-anchor="middle" fill="#6c4660" font-family="Trebuchet MS, sans-serif" font-size="23" font-weight="700" letter-spacing="1">MODERN</text>
+          <path d="M74 139c12-12 22-12 36 0 14-12 24-12 36 0-5 20-20 31-36 31s-31-11-36-31Z" fill="#fff4f5" stroke="#e88ca5" stroke-width="3"/>
+          <path d="m103 148 7 7 7-7" fill="none" stroke="#d8293f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="110" cy="155" r="3" fill="#d8293f"/>
+          <circle cx="77" cy="69" r="4" fill="#fff4f5"/><circle cx="149" cy="82" r="4" fill="#fff4f5"/>
+        </svg>
+        <span class="finger-heart" aria-hidden="true">🫰</span>
+      </div>
+      <p>Enter the location answer to continue.</p>
+      <form id="answer-five-form"><label for="answer-five">Babe's answer</label><input id="answer-five" name="answer" type="text" autocomplete="off" required><button type="submit">Check your answer</button><p class="message" id="message-five" aria-live="polite"></p></form>
+    </section>
   </main>
 
   <button class="emergency-button" id="emergency-button" type="button" aria-expanded="false" aria-controls="emergency-panel">Emergency</button>
@@ -95,13 +117,16 @@
   <script>
     const locationAnswer = "8g6g+x4 adliswil";
     const bestCut = { latitude: 47.31250324218141, longitude: 8.525313544559133 };
+    const bridge = { latitude: 47.3789893011236, longitude: 8.533852655245003 };
     const arrivalRadiusMeters = 20;
     const maxGpsAccuracyMeters = 50;
     const selnauTimerDurationSeconds = 45 * 60;
     let locationWatchId = null;
+    let bridgeWatchId = null;
     let timerIntervalId = null;
     let selnauUnlockAt = null;
     let selnauRiddleUnlocked = false;
+    let bridgeRiddleUnlocked = false;
 
     function playWrongAnswerSound() {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -177,6 +202,35 @@
       }, { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 });
     }
 
+    function startBridgeTracking() {
+      const status = document.getElementById("message-four");
+      if (!navigator.geolocation) { status.textContent = "Location check isn't available in this browser."; return; }
+      status.textContent = "Correct! Now head to the Bridge; allow location access and the next riddle will appear when you arrive.";
+      if (bridgeWatchId !== null) return;
+      bridgeWatchId = navigator.geolocation.watchPosition((position) => {
+        const accuracy = position.coords.accuracy;
+        if (accuracy > maxGpsAccuracyMeters) {
+          status.textContent = `Heading to the Bridge… waiting for a clearer GPS fix (current accuracy ±${Math.round(accuracy)} m).`;
+          return;
+        }
+        const distance = distanceInMeters(position.coords.latitude, position.coords.longitude, bridge.latitude, bridge.longitude);
+        if (distance <= arrivalRadiusMeters + accuracy) {
+          bridgeRiddleUnlocked = true;
+          if (bridgeWatchId !== null) { navigator.geolocation.clearWatch(bridgeWatchId); bridgeWatchId = null; }
+          status.textContent = "You've arrived! Here's the next riddle.";
+          const nextStep = document.getElementById("step-five");
+          nextStep.hidden = false;
+          nextStep.scrollIntoView({ behavior: "smooth", block: "start" });
+          document.getElementById("answer-five").focus();
+        } else {
+          status.textContent = `Heading to the Bridge… about ${Math.round(distance)} m away.`;
+        }
+      }, (error) => {
+        const errors = { 1: "Location permission was denied. Allow location access to unlock the riddle at the Bridge.", 2: "Your location couldn't be determined. Check that location services are enabled.", 3: "GPS took too long to respond. Keep the page open and try again where the signal is clearer." };
+        status.textContent = errors[error.code] || "Couldn't access your location. Check your browser's location permissions.";
+      }, { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 });
+    }
+
     document.getElementById("answer-one-form").addEventListener("submit", (event) => {
       event.preventDefault();
       const answer = document.getElementById("answer-one").value.trim().toLowerCase();
@@ -237,9 +291,18 @@
       const answer = document.getElementById("answer-four").value.trim().toLowerCase();
       const message = document.getElementById("message-four");
       if (answer === "bridge") {
-        message.textContent = "That's right! Here's a little celebration."; message.classList.add("success");
+        message.textContent = "That's right! Your next destination is ready."; message.classList.add("success");
         document.getElementById("celebration").hidden = false;
+        startBridgeTracking();
       } else { message.textContent = "Not quite—try again."; message.classList.remove("success"); playWrongAnswerSound(); }
+    });
+
+    document.getElementById("answer-five-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const answer = document.getElementById("answer-five").value.trim().toLowerCase();
+      const message = document.getElementById("message-five");
+      if (answer === "paopao") { message.textContent = "That's right!"; message.classList.add("success"); }
+      else { message.textContent = "Not quite—try again."; message.classList.remove("success"); playWrongAnswerSound(); }
     });
   </script>
 </body>
