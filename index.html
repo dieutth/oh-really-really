@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f6f1e8">
-  <title>Scavenger Hunt</title>
+  <title>Travel around town with babe</title>
   <style>
     :root {
       color-scheme: light;
@@ -43,6 +43,25 @@
 
     h1 { margin: 0; font-size: clamp(2rem, 8vw, 3rem); }
     .intro { margin: 12px 0 32px; color: #68635b; line-height: 1.6; }
+    .heart {
+      display: block;
+      position: relative;
+      width: 42px;
+      height: 42px;
+      margin: 0 0 16px 9px;
+      transform: rotate(-45deg);
+      background: #d8293f;
+    }
+    .heart::before, .heart::after {
+      position: absolute;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #d8293f;
+      content: "";
+    }
+    .heart::before { top: -21px; left: 0; }
+    .heart::after { top: 0; left: 21px; }
 
     .step {
       padding-top: 24px;
@@ -99,8 +118,9 @@
 <body>
   <main>
     <p class="eyebrow">A little adventure</p>
-    <h1>Scavenger Hunt</h1>
-    <p class="intro">Solve each riddle to uncover the next step.</p>
+    <span class="heart" aria-hidden="true"></span>
+    <h1>Travel around town with babe</h1>
+    <p class="intro">Let's gooooo</p>
 
     <section class="step" id="step-one" aria-labelledby="riddle-one">
       <p class="step-label">Riddle 1 of 3</p>
@@ -151,6 +171,28 @@
     };
     const arrivalRadiusMeters = 75;
     let locationWatchId = null;
+
+    function playWrongAnswerSound() {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+
+      const audio = new AudioContext();
+      const oscillator = audio.createOscillator();
+      const gain = audio.createGain();
+      const now = audio.currentTime;
+
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(240, now);
+      oscillator.frequency.exponentialRampToValueAtTime(130, now + 0.3);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.18, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+      oscillator.connect(gain);
+      gain.connect(audio.destination);
+      oscillator.start(now);
+      oscillator.stop(now + 0.36);
+      oscillator.addEventListener("ended", () => audio.close(), { once: true });
+    }
 
     function distanceInMeters(lat1, lon1, lat2, lon2) {
       const earthRadius = 6371000;
@@ -212,13 +254,14 @@
       const message = document.getElementById("message-one");
 
       if (answer === "oh really really") {
-        message.textContent = "That's right! Here's your next riddle.";
+        message.textContent = "Wowwww babe's correct 👏";
         message.classList.add("success");
         document.getElementById("step-two").hidden = false;
         document.getElementById("answer-two").focus();
       } else {
         message.textContent = "Not quite—try again.";
         message.classList.remove("success");
+        playWrongAnswerSound();
       }
     });
 
@@ -228,7 +271,7 @@
       const message = document.getElementById("message-two");
 
       if (answer === mapAnswer) {
-        message.textContent = "That's right! Head to Best Cut, and the next riddle will unlock when you arrive.";
+        message.textContent = "Wowwww babe's correct 👏 Head to Best Cut, and the next riddle will unlock when you arrive.";
         message.classList.add("success");
         document.getElementById("map-link").hidden = false;
         document.getElementById("walking").hidden = false;
@@ -236,6 +279,7 @@
       } else {
         message.textContent = "That doesn't look right—check the location answer and try again.";
         message.classList.remove("success");
+        playWrongAnswerSound();
       }
     });
 
@@ -245,11 +289,12 @@
       const message = document.getElementById("message-three");
 
       if (answer === "selnau") {
-        message.textContent = "That's right! You found Selnau.";
+        message.textContent = "Wowwww babe's correct 👏 You found Selnau.";
         message.classList.add("success");
       } else {
         message.textContent = "Not quite—try again.";
         message.classList.remove("success");
+        playWrongAnswerSound();
       }
     });
   </script>
