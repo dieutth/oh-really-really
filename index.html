@@ -88,9 +88,12 @@
     }
 
     button:hover, .map-link:hover { background: #5e4028; }
-    .message { min-height: 1.5em; margin: 4px 0 0; color: #a13d32; font-size: .95rem; }
+    .message { min-height: 1.5em; margin: 4px 0 0; color: #a13d32; font-size: .95rem; line-height: 1.5; }
     .message.success { color: #286342; }
     .map-link { margin-top: 16px; }
+    .walking { margin-top: 24px; }
+    .walking p { line-height: 1.5; }
+    .walking iframe { display: block; width: 100%; max-width: 400px; height: 300px; margin: 16px auto; border: 0; border-radius: 12px; }
   </style>
 </head>
 <body>
@@ -100,7 +103,7 @@
     <p class="intro">Solve each riddle to uncover the next step.</p>
 
     <section class="step" id="step-one" aria-labelledby="riddle-one">
-      <p class="step-label">Riddle 1 of 2</p>
+      <p class="step-label">Riddle 1 of 3</p>
       <h2 class="riddle" id="riddle-one">Birthday cake and a gift—what phrase do they make?</h2>
       <form id="answer-one-form">
         <label for="answer-one">Your answer</label>
@@ -111,7 +114,7 @@
     </section>
 
     <section class="step" id="step-two" aria-labelledby="riddle-two" hidden>
-      <p class="step-label">Riddle 2 of 2</p>
+      <p class="step-label">Riddle 2 of 3</p>
       <h2 class="riddle" id="riddle-two">Love is in the hair.</h2>
       <form id="answer-two-form">
         <label for="answer-two">Enter the location answer</label>
@@ -119,12 +122,89 @@
         <button type="submit">Reveal the location</button>
         <p class="message" id="message-two" aria-live="polite"></p>
       </form>
-      <a class="map-link" id="map-link" href="https://maps.app.goo.gl/abMwenQzzJ6xw6V49" target="_blank" rel="noopener noreferrer" hidden>Open the next location in Maps</a>
+      <a class="map-link" id="map-link" href="https://maps.app.goo.gl/XodfP79Vf4iRVRui6" target="_blank" rel="noopener noreferrer" hidden>Open Best Cut in Maps</a>
+
+      <div class="walking" id="walking" hidden>
+        <p><strong>On your way to Best Cut!</strong> Keep this page open and allow location access. The next riddle will appear when you arrive.</p>
+        <iframe src="https://tenor.com/embed/20311095" title="Two cats walking together" loading="lazy" allowfullscreen></iframe>
+        <p class="message" id="location-status" aria-live="polite">Waiting for your location…</p>
+      </div>
+    </section>
+
+    <section class="step" id="step-three" aria-labelledby="riddle-three" hidden>
+      <p class="step-label">Riddle 3 of 3</p>
+      <h2 class="riddle" id="riddle-three">Seriously, literally, nobody adores you [more than me ahihi].</h2>
+      <form id="answer-three-form">
+        <label for="answer-three">Your answer</label>
+        <input id="answer-three" name="answer" type="text" autocomplete="off" required>
+        <button type="submit">Check your answer</button>
+        <p class="message" id="message-three" aria-live="polite"></p>
+      </form>
     </section>
   </main>
 
   <script>
-    const mapAnswer = "https://maps.app.goo.gl/abMwenQzzJ6xw6V49";
+    const mapAnswer = "https://maps.app.goo.gl/XodfP79Vf4iRVRui6";
+    const bestCut = {
+      latitude: 47.31250324218141,
+      longitude: 8.525313544559133
+    };
+    const arrivalRadiusMeters = 75;
+    let locationWatchId = null;
+
+    function distanceInMeters(lat1, lon1, lat2, lon2) {
+      const earthRadius = 6371000;
+      const toRadians = (degrees) => degrees * Math.PI / 180;
+      const latitudeDifference = toRadians(lat2 - lat1);
+      const longitudeDifference = toRadians(lon2 - lon1);
+      const value = Math.sin(latitudeDifference / 2) ** 2
+        + Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2))
+        * Math.sin(longitudeDifference / 2) ** 2;
+      return earthRadius * 2 * Math.atan2(Math.sqrt(value), Math.sqrt(1 - value));
+    }
+
+    function startLocationTracking() {
+      const status = document.getElementById("location-status");
+
+      if (!navigator.geolocation) {
+        status.textContent = "Location tracking isn't available in this browser. Please enable location services and try another browser.";
+        return;
+      }
+
+      status.textContent = "Finding your location… Please allow location access when your browser asks.";
+      locationWatchId = navigator.geolocation.watchPosition((position) => {
+        const distance = distanceInMeters(
+          position.coords.latitude,
+          position.coords.longitude,
+          bestCut.latitude,
+          bestCut.longitude
+        );
+
+        if (distance <= arrivalRadiusMeters) {
+          status.textContent = "You've arrived at Best Cut! Here's your next riddle.";
+          document.getElementById("step-three").hidden = false;
+          document.getElementById("answer-three").focus();
+          document.getElementById("step-three").scrollIntoView({ behavior: "smooth", block: "start" });
+          if (locationWatchId !== null) {
+            navigator.geolocation.clearWatch(locationWatchId);
+            locationWatchId = null;
+          }
+        } else {
+          status.textContent = `You're about ${Math.round(distance)} m from Best Cut. The next riddle unlocks within ${arrivalRadiusMeters} m.`;
+        }
+      }, (error) => {
+        const messages = {
+          1: "Location permission was denied. Allow location access in your browser settings to unlock the next riddle when you arrive.",
+          2: "Your location couldn't be determined. Check that location services are enabled and try again.",
+          3: "Finding your location took too long. Keep this page open and try moving to an area with a clearer GPS signal."
+        };
+        status.textContent = messages[error.code] || "Couldn't access your location. Check your browser's location permissions.";
+      }, {
+        enableHighAccuracy: true,
+        maximumAge: 5000,
+        timeout: 20000
+      });
+    }
 
     document.getElementById("answer-one-form").addEventListener("submit", (event) => {
       event.preventDefault();
@@ -148,11 +228,27 @@
       const message = document.getElementById("message-two");
 
       if (answer === mapAnswer) {
-        message.textContent = "You found it! Your next location is ready.";
+        message.textContent = "That's right! Head to Best Cut, and the next riddle will unlock when you arrive.";
         message.classList.add("success");
         document.getElementById("map-link").hidden = false;
+        document.getElementById("walking").hidden = false;
+        startLocationTracking();
       } else {
         message.textContent = "That doesn't look right—check the location answer and try again.";
+        message.classList.remove("success");
+      }
+    });
+
+    document.getElementById("answer-three-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const answer = document.getElementById("answer-three").value.trim().toLowerCase();
+      const message = document.getElementById("message-three");
+
+      if (answer === "selnau") {
+        message.textContent = "That's right! You found Selnau.";
+        message.classList.add("success");
+      } else {
+        message.textContent = "Not quite—try again.";
         message.classList.remove("success");
       }
     });
