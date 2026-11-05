@@ -126,6 +126,9 @@
     .walking { margin-top: 24px; }
     .walking p { font-size: 1.05rem; line-height: 1.55; }
     .walking iframe { display: block; width: 100%; max-width: 400px; height: 300px; margin: 16px auto; border: 0; border-radius: 12px; }
+    .timer-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+    .timer { margin: 0; font-size: 1.2rem; font-weight: 700; }
+    .timer-controls button { min-height: 44px; }
 
     @media (max-width: 420px) {
       :root { font-size: 17px; }
@@ -166,14 +169,24 @@
       <a class="map-link" id="map-link" href="https://maps.app.goo.gl/XodfP79Vf4iRVRui6" target="_blank" rel="noopener noreferrer" hidden>Open Best Cut in Maps</a>
 
       <div class="walking" id="walking" hidden>
-        <p><strong>On your way to Best Cut!</strong> Keep this page open and allow location access. The next riddle will appear when you arrive.</p>
+        <p><strong>On your way to Best Cut!</strong> Keep this page open and allow location access. The Selnau riddle will unlock after you arrive at Best Cut and the timer finishes.</p>
         <iframe src="https://tenor.com/embed/20311095" title="Two cats walking together" loading="lazy" allowfullscreen></iframe>
         <p class="message" id="location-status" aria-live="polite">Waiting for your location…</p>
+        <div class="timer-controls" id="timer-controls" hidden>
+          <p class="timer" id="timer" role="timer" aria-live="polite">45:00</p>
+          <button type="button" id="early-riddle-button">Tell me riddle early</button>
+        </div>
+        <form id="early-code-form" hidden>
+          <label for="early-code">Ask for the code</label>
+          <input id="early-code" name="code" type="text" autocomplete="off" required>
+          <button type="submit">Unlock the riddle</button>
+          <p class="message" id="early-code-message" aria-live="polite"></p>
+        </form>
       </div>
     </section>
 
     <section class="step" id="step-three" aria-labelledby="riddle-three" hidden>
-      <p class="step-label">Riddle 3 of 3</p>
+      <p class="step-label">Selnau riddle</p>
       <h2 class="riddle" id="riddle-three">Seriously, literally, nobody adores you [more than me ahihi].</h2>
       <form id="answer-three-form">
         <label for="answer-three">Babe's answer</label>
@@ -185,14 +198,18 @@
   </main>
 
   <script>
-    const mapAnswer = "https://maps.app.goo.gl/XodfP79Vf4iRVRui6";
     const locationAnswer = "8g6g+x4 adliswil";
     const bestCut = {
       latitude: 47.31250324218141,
       longitude: 8.525313544559133
     };
-    const arrivalRadiusMeters = 75;
+    const arrivalRadiusMeters = 20;
+    const maxGpsAccuracyMeters = 50;
+    const selnauTimerDurationSeconds = 45 * 60;
     let locationWatchId = null;
+    let timerIntervalId = null;
+    let selnauUnlockAt = null;
+    let selnauRiddleUnlocked = false;
 
     function playWrongAnswerSound() {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -227,6 +244,41 @@
       return earthRadius * 2 * Math.atan2(Math.sqrt(value), Math.sqrt(1 - value));
     }
 
+    function revealSelnauRiddle() {
+      if (selnauRiddleUnlocked) return;
+      selnauRiddleUnlocked = true;
+      if (timerIntervalId !== null) {
+        window.clearInterval(timerIntervalId);
+        timerIntervalId = null;
+      }
+      document.getElementById("timer-controls").hidden = true;
+      document.getElementById("early-code-form").hidden = true;
+      document.getElementById("location-status").textContent = "Time's up! Here's the Selnau riddle.";
+      const stepThree = document.getElementById("step-three");
+      stepThree.hidden = false;
+      stepThree.scrollIntoView({ behavior: "smooth", block: "start" });
+      document.getElementById("answer-three").focus();
+    }
+
+    function updateTimer() {
+      if (selnauUnlockAt === null || selnauRiddleUnlocked) return;
+      const remainingSeconds = Math.max(0, Math.ceil((selnauUnlockAt - Date.now()) / 1000));
+      const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, "0");
+      const seconds = (remainingSeconds % 60).toString().padStart(2, "0");
+      document.getElementById("timer").textContent = `${minutes}:${seconds}`;
+
+      if (remainingSeconds === 0) revealSelnauRiddle();
+    }
+
+    function startSelnauTimer() {
+      if (selnauUnlockAt !== null) return;
+      selnauUnlockAt = Date.now() + selnauTimerDurationSeconds * 1000;
+      document.getElementById("location-status").textContent = "You've arrived at Best Cut! The timer is running while you head to Selnau.";
+      document.getElementById("timer-controls").hidden = false;
+      updateTimer();
+      timerIntervalId = window.setInterval(updateTimer, 1000);
+    }
+
     function startLocationTracking() {
       const status = document.getElementById("location-status");
 
@@ -235,8 +287,11 @@
         return;
       }
 
-      status.textContent = "Finding your location… Please allow location access when your browser asks.";
+      status.textContent = "Waiting for your location…";
       locationWatchId = navigator.geolocation.watchPosition((position) => {
+        const accuracy = position.coords.accuracy;
+        if (accuracy > maxGpsAccuracyMeters) return;
+
         const distance = distanceInMeters(
           position.coords.latitude,
           position.coords.longitude,
@@ -244,28 +299,25 @@
           bestCut.longitude
         );
 
-        if (distance <= arrivalRadiusMeters) {
-          status.textContent = "You've arrived at Best Cut! Here's your next riddle.";
-          document.getElementById("step-three").hidden = false;
-          document.getElementById("answer-three").focus();
-          document.getElementById("step-three").scrollIntoView({ behavior: "smooth", block: "start" });
+        // The arrival zone is 20 m, with the device's reported GPS uncertainty
+        // added so small location errors do not prevent arrival from registering.
+        if (distance <= arrivalRadiusMeters + accuracy) {
           if (locationWatchId !== null) {
             navigator.geolocation.clearWatch(locationWatchId);
             locationWatchId = null;
           }
-        } else {
-          status.textContent = `You're about ${Math.round(distance)} m from Best Cut. The next riddle unlocks within ${arrivalRadiusMeters} m.`;
+          startSelnauTimer();
         }
       }, (error) => {
         const messages = {
-          1: "Location permission was denied. Allow location access in your browser settings to unlock the next riddle when you arrive.",
+          1: "Location permission was denied. Allow location access in your browser settings to register arrival at Best Cut.",
           2: "Your location couldn't be determined. Check that location services are enabled and try again.",
-          3: "Finding your location took too long. Keep this page open and try moving to an area with a clearer GPS signal."
+          3: "Finding your location took too long. Keep this page open and try again where the GPS signal is clearer."
         };
         status.textContent = messages[error.code] || "Couldn't access your location. Check your browser's location permissions.";
       }, {
         enableHighAccuracy: true,
-        maximumAge: 5000,
+        maximumAge: 0,
         timeout: 20000
       });
     }
@@ -293,7 +345,7 @@
       const message = document.getElementById("message-two");
 
       if (answer === locationAnswer) {
-        message.textContent = "Wowwww babe's correct 👏 Head to Best Cut, and will see will see.";
+        message.textContent = "Wowwww babe's correct 👏 Head to Best Cut!";
         message.classList.add("success");
         document.getElementById("map-link").hidden = false;
         document.getElementById("walking").hidden = false;
@@ -305,12 +357,33 @@
       }
     });
 
+    document.getElementById("early-riddle-button").addEventListener("click", () => {
+      document.getElementById("early-code-form").hidden = false;
+      document.getElementById("early-code").focus();
+    });
+
+    document.getElementById("early-code-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const code = document.getElementById("early-code").value.trim().toLowerCase();
+      const message = document.getElementById("early-code-message");
+
+      if (code === "first of all") {
+        message.textContent = "That's the code! Here's the Selnau riddle early.";
+        message.classList.add("success");
+        revealSelnauRiddle();
+      } else {
+        message.textContent = "That's not the code—try again.";
+        message.classList.remove("success");
+        playWrongAnswerSound();
+      }
+    });
+
     document.getElementById("answer-three-form").addEventListener("submit", (event) => {
       event.preventDefault();
       const answer = document.getElementById("answer-three").value.trim().toLowerCase();
       const message = document.getElementById("message-three");
 
-      if (answer === "selnau" || answer === "Selnau") {
+      if (answer === "selnau") {
         message.textContent = "Wowwww babe's correct 👏 You found Selnau.";
         message.classList.add("success");
       } else {
