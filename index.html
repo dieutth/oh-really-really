@@ -126,7 +126,7 @@
       <a class="map-link" id="map-link" href="https://maps.app.goo.gl/XodfP79Vf4iRVRui6" target="_blank" rel="noopener noreferrer" hidden>Open Best Cut in Maps</a>
 
       <div class="walking" id="walking" hidden>
-        <p><strong>On your way to Best Cut!</strong> Keep this page open and allow location access. The Selnau riddle will unlock after you arrive at Best Cut and the timer finishes.</p>
+        <p><strong>On your way to Best Cut!</strong> Keep this page open and allow location access. The next riddle will unlock after you arrive at Best Cut and the timer finishes.</p>
         <iframe src="https://tenor.com/embed/20311095" title="Two cats walking together" loading="lazy" allowfullscreen></iframe>
         <p class="message" id="location-status" aria-live="polite">Waiting for your location…</p>
         <div class="timer-controls" id="timer-controls" hidden>
@@ -143,7 +143,7 @@
     </section>
 
     <section class="step" id="step-three" aria-labelledby="riddle-three" hidden>
-      <p class="step-label">Selnau riddle</p>
+      <p class="step-label">Riddle 3 of 3</p>
       <h2 class="riddle" id="riddle-three">Seriously, literally, nobody adores you [more than me ahihi].</h2>
       <form id="answer-three-form">
         <label for="answer-three">Babe's answer</label>
@@ -216,7 +216,7 @@
       }
       document.getElementById("timer-controls").hidden = true;
       document.getElementById("early-code-form").hidden = true;
-      document.getElementById("location-status").textContent = "Here's the Selnau riddle.";
+      document.getElementById("location-status").textContent = "Here's the next riddle.";
       const stepThree = document.getElementById("step-three");
       stepThree.hidden = false;
       stepThree.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -235,7 +235,7 @@
     function startSelnauTimer() {
       if (selnauUnlockAt !== null) return;
       selnauUnlockAt = Date.now() + selnauTimerDurationSeconds * 1000;
-      document.getElementById("location-status").textContent = "You've arrived at Best Cut! The timer is running while you head to Selnau.";
+      document.getElementById("location-status").textContent = "You've arrived at Best Cut! The timer is running while you head to the next stop.";
       document.getElementById("timer-controls").hidden = false;
       updateTimer();
       timerIntervalId = window.setInterval(updateTimer, 1000);
@@ -312,7 +312,7 @@
       const code = document.getElementById("early-code").value.trim().toLowerCase();
       const message = document.getElementById("early-code-message");
       if (code === "first of all") {
-        message.textContent = "That's the code! Here's the Selnau riddle early.";
+        message.textContent = "That's the code! Here's the next riddle early.";
         message.classList.add("success");
         revealSelnauRiddle();
       } else {
@@ -334,7 +334,7 @@
       const code = document.getElementById("emergency-code").value.trim();
       const message = document.getElementById("emergency-message");
       if (code === "1234") {
-        message.textContent = "Test code accepted. Showing the Selnau riddle.";
+        message.textContent = "Test code accepted. Showing the next riddle.";
         message.classList.add("success");
         revealSelnauRiddle();
         document.getElementById("emergency-panel").hidden = true;
