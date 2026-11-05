@@ -36,89 +36,23 @@
       box-shadow: 0 16px 48px rgb(52 43 29 / 9%);
     }
 
-    .eyebrow-line {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .eyebrow {
-      margin: 0;
-      color: #8b6842;
-      font-size: .95rem;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-
+    .eyebrow-line { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .eyebrow { margin: 0; color: #8b6842; font-size: .95rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
     h1 { margin: 0; font-size: clamp(2.4rem, 9vw, 3.5rem); font-weight: 700; line-height: 1.08; }
     .intro { margin: 16px 0 32px; color: #68635b; font-size: 1.2rem; font-weight: 600; line-height: 1.5; }
-    .heart {
-      display: block;
-      position: relative;
-      flex: 0 0 12px;
-      width: 12px;
-      height: 12px;
-      margin: 0 5px 5px 0;
-      transform: rotate(-45deg);
-      background: #d8293f;
-    }
-    .heart::before, .heart::after {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #d8293f;
-      content: "";
-    }
+    .heart { display: block; position: relative; flex: 0 0 12px; width: 12px; height: 12px; margin: 0 5px 5px 0; transform: rotate(-45deg); background: #d8293f; }
+    .heart::before, .heart::after { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: #d8293f; content: ""; }
     .heart::before { top: -6px; left: 0; }
     .heart::after { top: 0; left: 6px; }
-
-    .step {
-      padding-top: 24px;
-      border-top: 1px solid #eee8dd;
-    }
-
+    .step { padding-top: 24px; border-top: 1px solid #eee8dd; }
     .step[hidden], [hidden] { display: none !important; }
     .step-label { margin: 0 0 8px; color: #8b6842; font-size: 1rem; font-weight: 700; }
     .riddle { margin: 0 0 20px; font-size: 1.55rem; font-weight: 600; line-height: 1.4; }
-
     form { display: flex; flex-direction: column; gap: 12px; }
     label { font-size: 1.05rem; font-weight: 600; }
-
-    input {
-      width: 100%;
-      padding: 14px 15px;
-      border: 1px solid #d8d0c3;
-      border-radius: 12px;
-      background: #fff;
-      color: inherit;
-      font: inherit;
-    }
-
-    input:focus-visible, button:focus-visible, a:focus-visible {
-      outline: 3px solid #c9975b;
-      outline-offset: 3px;
-    }
-
-    button, .map-link {
-      display: inline-flex;
-      min-height: 50px;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 18px;
-      border: 0;
-      border-radius: 14px;
-      background: #765435;
-      color: #fff;
-      font: inherit;
-      font-size: 1.05rem;
-      font-weight: 700;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
+    input { width: 100%; padding: 14px 15px; border: 1px solid #d8d0c3; border-radius: 12px; background: #fff; color: inherit; font: inherit; }
+    input:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #c9975b; outline-offset: 3px; }
+    button, .map-link { display: inline-flex; min-height: 50px; align-items: center; justify-content: center; padding: 12px 18px; border: 0; border-radius: 14px; background: #765435; color: #fff; font: inherit; font-size: 1.05rem; font-weight: 700; text-decoration: none; cursor: pointer; }
     button:hover, .map-link:hover { background: #5e4028; }
     .message { min-height: 1.5em; margin: 4px 0 0; color: #a13d32; font-size: 1rem; line-height: 1.5; }
     .message.success { color: #286342; }
@@ -129,6 +63,29 @@
     .timer-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
     .timer { margin: 0; font-size: 1.2rem; font-weight: 700; }
     .timer-controls button { min-height: 44px; }
+
+    .emergency-button {
+      position: fixed;
+      z-index: 10;
+      top: max(16px, env(safe-area-inset-top));
+      right: max(16px, env(safe-area-inset-right));
+      background: #a13d32;
+      box-shadow: 0 4px 14px rgb(52 43 29 / 20%);
+    }
+    .emergency-button:hover { background: #812e26; }
+    .emergency-panel {
+      position: fixed;
+      z-index: 9;
+      top: max(78px, calc(env(safe-area-inset-top) + 62px));
+      right: max(16px, env(safe-area-inset-right));
+      width: min(340px, calc(100vw - 32px));
+      padding: 20px;
+      border: 1px solid #e6dece;
+      border-radius: 16px;
+      background: #fffdf9;
+      box-shadow: 0 12px 32px rgb(52 43 29 / 18%);
+    }
+    .emergency-panel p { margin: 0 0 12px; }
 
     @media (max-width: 420px) {
       :root { font-size: 17px; }
@@ -197,12 +154,20 @@
     </section>
   </main>
 
+  <button class="emergency-button" id="emergency-button" type="button" aria-expanded="false" aria-controls="emergency-panel">Emergency</button>
+  <section class="emergency-panel" id="emergency-panel" aria-label="Emergency test unlock" hidden>
+    <p><strong>Test the next riddle</strong></p>
+    <form id="emergency-form">
+      <label for="emergency-code">Enter emergency code</label>
+      <input id="emergency-code" name="code" type="text" inputmode="numeric" autocomplete="off" required>
+      <button type="submit">Show next riddle</button>
+      <p class="message" id="emergency-message" aria-live="polite"></p>
+    </form>
+  </section>
+
   <script>
     const locationAnswer = "8g6g+x4 adliswil";
-    const bestCut = {
-      latitude: 47.31250324218141,
-      longitude: 8.525313544559133
-    };
+    const bestCut = { latitude: 47.31250324218141, longitude: 8.525313544559133 };
     const arrivalRadiusMeters = 20;
     const maxGpsAccuracyMeters = 50;
     const selnauTimerDurationSeconds = 45 * 60;
@@ -214,12 +179,10 @@
     function playWrongAnswerSound() {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       if (!AudioContext) return;
-
       const audio = new AudioContext();
       const oscillator = audio.createOscillator();
       const gain = audio.createGain();
       const now = audio.currentTime;
-
       oscillator.type = "sine";
       oscillator.frequency.setValueAtTime(240, now);
       oscillator.frequency.exponentialRampToValueAtTime(130, now + 0.3);
@@ -253,7 +216,7 @@
       }
       document.getElementById("timer-controls").hidden = true;
       document.getElementById("early-code-form").hidden = true;
-      document.getElementById("location-status").textContent = "Time's up! Here's the Selnau riddle.";
+      document.getElementById("location-status").textContent = "Here's the Selnau riddle.";
       const stepThree = document.getElementById("step-three");
       stepThree.hidden = false;
       stepThree.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -266,7 +229,6 @@
       const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, "0");
       const seconds = (remainingSeconds % 60).toString().padStart(2, "0");
       document.getElementById("timer").textContent = `${minutes}:${seconds}`;
-
       if (remainingSeconds === 0) revealSelnauRiddle();
     }
 
@@ -281,26 +243,15 @@
 
     function startLocationTracking() {
       const status = document.getElementById("location-status");
-
       if (!navigator.geolocation) {
         status.textContent = "Location tracking isn't available in this browser. Please enable location services and try another browser.";
         return;
       }
-
       status.textContent = "Waiting for your location…";
       locationWatchId = navigator.geolocation.watchPosition((position) => {
         const accuracy = position.coords.accuracy;
         if (accuracy > maxGpsAccuracyMeters) return;
-
-        const distance = distanceInMeters(
-          position.coords.latitude,
-          position.coords.longitude,
-          bestCut.latitude,
-          bestCut.longitude
-        );
-
-        // The arrival zone is 20 m, with the device's reported GPS uncertainty
-        // added so small location errors do not prevent arrival from registering.
+        const distance = distanceInMeters(position.coords.latitude, position.coords.longitude, bestCut.latitude, bestCut.longitude);
         if (distance <= arrivalRadiusMeters + accuracy) {
           if (locationWatchId !== null) {
             navigator.geolocation.clearWatch(locationWatchId);
@@ -315,18 +266,13 @@
           3: "Finding your location took too long. Keep this page open and try again where the GPS signal is clearer."
         };
         status.textContent = messages[error.code] || "Couldn't access your location. Check your browser's location permissions.";
-      }, {
-        enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: 20000
-      });
+      }, { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 });
     }
 
     document.getElementById("answer-one-form").addEventListener("submit", (event) => {
       event.preventDefault();
       const answer = document.getElementById("answer-one").value.trim().toLowerCase();
       const message = document.getElementById("message-one");
-
       if (answer === "oh really really") {
         message.textContent = "Wowwww babe's correct 👏";
         message.classList.add("success");
@@ -343,7 +289,6 @@
       event.preventDefault();
       const answer = document.getElementById("answer-two").value.trim().toLowerCase().replace(/\s+/g, " ");
       const message = document.getElementById("message-two");
-
       if (answer === locationAnswer) {
         message.textContent = "Wowwww babe's correct 👏 Head to Best Cut!";
         message.classList.add("success");
@@ -366,7 +311,6 @@
       event.preventDefault();
       const code = document.getElementById("early-code").value.trim().toLowerCase();
       const message = document.getElementById("early-code-message");
-
       if (code === "first of all") {
         message.textContent = "That's the code! Here's the Selnau riddle early.";
         message.classList.add("success");
@@ -378,11 +322,34 @@
       }
     });
 
+    document.getElementById("emergency-button").addEventListener("click", () => {
+      const panel = document.getElementById("emergency-panel");
+      panel.hidden = !panel.hidden;
+      document.getElementById("emergency-button").setAttribute("aria-expanded", String(!panel.hidden));
+      if (!panel.hidden) document.getElementById("emergency-code").focus();
+    });
+
+    document.getElementById("emergency-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const code = document.getElementById("emergency-code").value.trim();
+      const message = document.getElementById("emergency-message");
+      if (code === "1234") {
+        message.textContent = "Test code accepted. Showing the Selnau riddle.";
+        message.classList.add("success");
+        revealSelnauRiddle();
+        document.getElementById("emergency-panel").hidden = true;
+        document.getElementById("emergency-button").setAttribute("aria-expanded", "false");
+      } else {
+        message.textContent = "Incorrect code. Try again.";
+        message.classList.remove("success");
+        playWrongAnswerSound();
+      }
+    });
+
     document.getElementById("answer-three-form").addEventListener("submit", (event) => {
       event.preventDefault();
       const answer = document.getElementById("answer-three").value.trim().toLowerCase();
       const message = document.getElementById("message-three");
-
       if (answer === "selnau") {
         message.textContent = "Wowwww babe's correct 👏 You found Selnau.";
         message.classList.add("success");
