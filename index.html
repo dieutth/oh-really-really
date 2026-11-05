@@ -292,7 +292,7 @@
       const message = document.getElementById("message-two");
 
       if (answer === mapAnswer) {
-        message.textContent = "Wowwww babe's correct 👏 Head to Best Cut, and the next riddle will unlock when you arrive.";
+        message.textContent = "Wowwww babe's correct 👏 Head to Best Cut, and will see will see.";
         message.classList.add("success");
         document.getElementById("map-link").hidden = false;
         document.getElementById("walking").hidden = false;
@@ -309,11 +309,11 @@
       const answer = document.getElementById("answer-three").value.trim().toLowerCase();
       const message = document.getElementById("message-three");
 
-      if (answer === "selnau") {
+      if (answer === "selnau" || answer === "Selnau") {
         message.textContent = "Wowwww babe's correct 👏 You found Selnau.";
         message.classList.add("success");
       } else {
-        message.textContent = "Not quite—try again.";
+        message.textContent = "Wrongggg. Try again honey ahihi!";
         message.classList.remove("success");
         playWrongAnswerSound();
       }
