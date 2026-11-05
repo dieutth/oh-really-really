@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f1e8">
+  <title>Scavenger Hunt</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #25231f;
+      background: #f6f1e8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    main {
+      width: min(100%, 520px);
+      padding: clamp(24px, 6vw, 48px);
+      border: 1px solid #e6dece;
+      border-radius: 24px;
+      background: #fffdf9;
+      box-shadow: 0 16px 48px rgb(52 43 29 / 9%);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: #8b6842;
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1 { margin: 0; font-size: clamp(2rem, 8vw, 3rem); }
+    .intro { margin: 12px 0 32px; color: #68635b; line-height: 1.6; }
+
+    .step {
+      padding-top: 24px;
+      border-top: 1px solid #eee8dd;
+    }
+
+    .step[hidden], [hidden] { display: none !important; }
+    .step-label { margin: 0 0 8px; color: #8b6842; font-size: .9rem; font-weight: 700; }
+    .riddle { margin: 0 0 20px; font-size: 1.35rem; font-weight: 650; line-height: 1.45; }
+
+    form { display: flex; flex-direction: column; gap: 12px; }
+    label { font-size: .9rem; font-weight: 600; }
+
+    input {
+      width: 100%;
+      padding: 14px 15px;
+      border: 1px solid #d8d0c3;
+      border-radius: 12px;
+      background: #fff;
+      color: inherit;
+      font: inherit;
+    }
+
+    input:focus-visible, button:focus-visible, a:focus-visible {
+      outline: 3px solid #c9975b;
+      outline-offset: 3px;
+    }
+
+    button, .map-link {
+      display: inline-flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border: 0;
+      border-radius: 12px;
+      background: #765435;
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    button:hover, .map-link:hover { background: #5e4028; }
+    .message { min-height: 1.5em; margin: 4px 0 0; color: #a13d32; font-size: .95rem; }
+    .message.success { color: #286342; }
+    .map-link { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">A little adventure</p>
+    <h1>Scavenger Hunt</h1>
+    <p class="intro">Solve each riddle to uncover the next step.</p>
+
+    <section class="step" id="step-one" aria-labelledby="riddle-one">
+      <p class="step-label">Riddle 1 of 2</p>
+      <h2 class="riddle" id="riddle-one">Birthday cake and a gift—what phrase do they make?</h2>
+      <form id="answer-one-form">
+        <label for="answer-one">Your answer</label>
+        <input id="answer-one" name="answer" type="text" autocomplete="off" required>
+        <button type="submit">Unlock the next riddle</button>
+        <p class="message" id="message-one" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="step" id="step-two" aria-labelledby="riddle-two" hidden>
+      <p class="step-label">Riddle 2 of 2</p>
+      <h2 class="riddle" id="riddle-two">Love is in the hair.</h2>
+      <form id="answer-two-form">
+        <label for="answer-two">Enter the location answer</label>
+        <input id="answer-two" name="answer" type="url" inputmode="url" autocomplete="url" required>
+        <button type="submit">Reveal the location</button>
+        <p class="message" id="message-two" aria-live="polite"></p>
+      </form>
+      <a class="map-link" id="map-link" href="https://maps.app.goo.gl/abMwenQzzJ6xw6V49" target="_blank" rel="noopener noreferrer" hidden>Open the next location in Maps</a>
+    </section>
+  </main>
+
+  <script>
+    const mapAnswer = "https://maps.app.goo.gl/abMwenQzzJ6xw6V49";
+
+    document.getElementById("answer-one-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const answer = document.getElementById("answer-one").value.trim().toLowerCase();
+      const message = document.getElementById("message-one");
+
+      if (answer === "oh really really") {
+        message.textContent = "That's right! Here's your next riddle.";
+        message.classList.add("success");
+        document.getElementById("step-two").hidden = false;
+        document.getElementById("answer-two").focus();
+      } else {
+        message.textContent = "Not quite—try again.";
+        message.classList.remove("success");
+      }
+    });
+
+    document.getElementById("answer-two-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const answer = document.getElementById("answer-two").value.trim().replace(/\/$/, "");
+      const message = document.getElementById("message-two");
+
+      if (answer === mapAnswer) {
+        message.textContent = "You found it! Your next location is ready.";
+        message.classList.add("success");
+        document.getElementById("map-link").hidden = false;
+      } else {
+        message.textContent = "That doesn't look right—check the location answer and try again.";
+        message.classList.remove("success");
+      }
+    });
+  </script>
+</body>
+</html>
