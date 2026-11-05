@@ -5,10 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f6f1e8">
   <title>Travel around town with babe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: light;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+      font-size: 18px;
       color: #25231f;
       background: #f6f1e8;
     }
@@ -24,7 +28,7 @@
     }
 
     main {
-      width: min(100%, 520px);
+      width: min(100%, 560px);
       padding: clamp(24px, 6vw, 48px);
       border: 1px solid #e6dece;
       border-radius: 24px;
@@ -35,14 +39,14 @@
     .eyebrow {
       margin: 0 0 12px;
       color: #8b6842;
-      font-size: .8rem;
+      font-size: .95rem;
       font-weight: 700;
-      letter-spacing: .12em;
+      letter-spacing: .08em;
       text-transform: uppercase;
     }
 
-    h1 { margin: 0; font-size: clamp(2rem, 8vw, 3rem); }
-    .intro { margin: 12px 0 32px; color: #68635b; line-height: 1.6; }
+    h1 { margin: 0; font-size: clamp(2.4rem, 9vw, 3.5rem); font-weight: 700; line-height: 1.08; }
+    .intro { margin: 16px 0 32px; color: #68635b; font-size: 1.2rem; font-weight: 600; line-height: 1.5; }
     .heart {
       display: block;
       position: relative;
@@ -69,11 +73,11 @@
     }
 
     .step[hidden], [hidden] { display: none !important; }
-    .step-label { margin: 0 0 8px; color: #8b6842; font-size: .9rem; font-weight: 700; }
-    .riddle { margin: 0 0 20px; font-size: 1.35rem; font-weight: 650; line-height: 1.45; }
+    .step-label { margin: 0 0 8px; color: #8b6842; font-size: 1rem; font-weight: 700; }
+    .riddle { margin: 0 0 20px; font-size: 1.55rem; font-weight: 600; line-height: 1.4; }
 
     form { display: flex; flex-direction: column; gap: 12px; }
-    label { font-size: .9rem; font-weight: 600; }
+    label { font-size: 1.05rem; font-weight: 600; }
 
     input {
       width: 100%;
@@ -92,27 +96,34 @@
 
     button, .map-link {
       display: inline-flex;
-      min-height: 48px;
+      min-height: 50px;
       align-items: center;
       justify-content: center;
       padding: 12px 18px;
       border: 0;
-      border-radius: 12px;
+      border-radius: 14px;
       background: #765435;
       color: #fff;
       font: inherit;
+      font-size: 1.05rem;
       font-weight: 700;
       text-decoration: none;
       cursor: pointer;
     }
 
     button:hover, .map-link:hover { background: #5e4028; }
-    .message { min-height: 1.5em; margin: 4px 0 0; color: #a13d32; font-size: .95rem; line-height: 1.5; }
+    .message { min-height: 1.5em; margin: 4px 0 0; color: #a13d32; font-size: 1rem; line-height: 1.5; }
     .message.success { color: #286342; }
     .map-link { margin-top: 16px; }
     .walking { margin-top: 24px; }
-    .walking p { line-height: 1.5; }
+    .walking p { font-size: 1.05rem; line-height: 1.55; }
     .walking iframe { display: block; width: 100%; max-width: 400px; height: 300px; margin: 16px auto; border: 0; border-radius: 12px; }
+
+    @media (max-width: 420px) {
+      :root { font-size: 17px; }
+      main { padding: 24px; }
+      .riddle { font-size: 1.4rem; }
+    }
   </style>
 </head>
 <body>
