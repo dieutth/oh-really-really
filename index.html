@@ -36,8 +36,15 @@
       box-shadow: 0 16px 48px rgb(52 43 29 / 9%);
     }
 
+    .eyebrow-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
     .eyebrow {
-      margin: 0 0 12px;
+      margin: 0;
       color: #8b6842;
       font-size: .95rem;
       font-weight: 700;
@@ -50,22 +57,23 @@
     .heart {
       display: block;
       position: relative;
-      width: 42px;
-      height: 42px;
-      margin: 0 0 16px 9px;
+      flex: 0 0 12px;
+      width: 12px;
+      height: 12px;
+      margin: 0 5px 5px 0;
       transform: rotate(-45deg);
       background: #d8293f;
     }
     .heart::before, .heart::after {
       position: absolute;
-      width: 42px;
-      height: 42px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
       background: #d8293f;
       content: "";
     }
-    .heart::before { top: -21px; left: 0; }
-    .heart::after { top: 0; left: 21px; }
+    .heart::before { top: -6px; left: 0; }
+    .heart::after { top: 0; left: 6px; }
 
     .step {
       padding-top: 24px;
@@ -128,8 +136,10 @@
 </head>
 <body>
   <main>
-    <p class="eyebrow">A little adventure</p>
-    <span class="heart" aria-hidden="true"></span>
+    <div class="eyebrow-line">
+      <p class="eyebrow">A little adventure</p>
+      <span class="heart" aria-hidden="true"></span>
+    </div>
     <h1>Travel around town with babe</h1>
     <p class="intro">Let's gooooo</p>
 
