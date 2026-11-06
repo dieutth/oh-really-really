@@ -41,22 +41,14 @@
     .emergency-button { position: fixed; z-index: 10; top: max(16px, env(safe-area-inset-top)); right: max(16px, env(safe-area-inset-right)); background: #a13d32; box-shadow: 0 4px 14px rgb(52 43 29 / 20%); }
     .emergency-button:hover { background: #812e26; }
     .emergency-panel { position: fixed; z-index: 11; top: max(78px, calc(env(safe-area-inset-top) + 62px)); right: max(16px, env(safe-area-inset-right)); width: min(340px, calc(100vw - 32px)); padding: 20px; border: 1px solid #e6dece; border-radius: 16px; background: #fffdf9; box-shadow: 0 12px 32px rgb(52 43 29 / 18%); }
-    .emergency-panel p { margin: 0 0 12px; }
     .bridge-art { display: flex; align-items: center; justify-content: center; gap: clamp(12px, 5vw, 40px); margin: 12px 0 24px; padding: 20px; border-radius: 20px; background: #fff4f5; }
     .bridge-art svg { width: min(48%, 210px); height: auto; }
     .finger-heart { font-size: clamp(4rem, 18vw, 7rem); line-height: 1; }
-
     body.celebrating { display: block; padding: 0; overflow: hidden; background: #070b20; }
     body.celebrating main { transform-origin: center top; animation: tetris-collapse 1.35s cubic-bezier(.7, 0, .9, .3) forwards; }
-    @keyframes tetris-collapse {
-      0% { opacity: 1; transform: perspective(900px) rotateX(0) scaleY(1); clip-path: inset(0); }
-      35% { opacity: 1; transform: perspective(900px) rotateX(12deg) scaleY(.88); clip-path: inset(15% 0 0); }
-      70% { opacity: .8; transform: perspective(900px) rotateX(38deg) scaleY(.3) translateY(35vh); clip-path: inset(70% 0 0); }
-      100% { opacity: 0; transform: perspective(900px) rotateX(78deg) scaleY(.02) translateY(100vh); clip-path: inset(98% 0 0); }
-    }
+    @keyframes tetris-collapse { 0% { opacity: 1; transform: perspective(900px) rotateX(0) scaleY(1); clip-path: inset(0); } 35% { opacity: 1; transform: perspective(900px) rotateX(12deg) scaleY(.88); clip-path: inset(15% 0 0); } 70% { opacity: .8; transform: perspective(900px) rotateX(38deg) scaleY(.3) translateY(35vh); clip-path: inset(70% 0 0); } 100% { opacity: 0; transform: perspective(900px) rotateX(78deg) scaleY(.02) translateY(100vh); clip-path: inset(98% 0 0); } }
     #celebration-scene { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; overflow: hidden; color: white; background: radial-gradient(ellipse at 50% 110%, #27305d 0, #101631 42%, #050817 100%); opacity: 0; transition: opacity .8s ease; }
-    #celebration-scene.visible { opacity: 1; }
-    #celebration-scene[hidden] { display: none; }
+    #celebration-scene.visible { opacity: 1; } #celebration-scene[hidden] { display: none; }
     #fireworks { position: absolute; inset: 0; width: 100%; height: 100%; }
     .night-stars { position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(2px 2px at 12% 18%, #fff 50%, transparent 60%), radial-gradient(1px 1px at 30% 42%, #fff 50%, transparent 60%), radial-gradient(2px 2px at 72% 21%, #ffe9a8 50%, transparent 60%), radial-gradient(1px 1px at 87% 53%, #fff 50%, transparent 60%), radial-gradient(1.5px 1.5px at 54% 13%, #fff 50%, transparent 60%), radial-gradient(1px 1px at 43% 66%, #cbd6ff 50%, transparent 60%), radial-gradient(2px 2px at 95% 12%, #fff 50%, transparent 60%); }
     .love-title { z-index: 1; margin: 0; padding: 24px; color: #fff2bd; font-size: clamp(2.5rem, 9vw, 6rem); font-weight: 700; text-align: center; text-shadow: 0 0 12px #ff71a8, 0 0 32px #ff71a8, 0 0 65px #ffb6d2; animation: blink-glow 1s steps(2, start) infinite; }
@@ -68,8 +60,7 @@
 <body>
   <main id="adventure">
     <div class="eyebrow-line"><p class="eyebrow">A little adventure</p><span class="heart" aria-hidden="true"></span></div>
-    <h1>Travel around town with babe</h1>
-    <p class="intro">Let's gooooo</p>
+    <h1>Travel around town with babe</h1><p class="intro">Let's gooooo</p>
 
     <section class="step" id="step-one" aria-labelledby="riddle-one"><p class="step-label">Riddle 1 of 3</p><h2 class="riddle" id="riddle-one">Birthday cake and a gift—what phrase do they make?</h2><form id="answer-one-form"><label for="answer-one">Babe's answer</label><input id="answer-one" type="text" autocomplete="off" required><button type="submit">Unlock the next riddle</button><p class="message" id="message-one" aria-live="polite"></p></form></section>
 
@@ -77,24 +68,21 @@
 
     <section class="step" id="step-three" aria-labelledby="riddle-three" hidden><p class="step-label">Riddle 3 of 3</p><h2 class="riddle" id="riddle-three">Seriously, literally, nobody adores you [more than me ahihi].</h2><form id="answer-three-form"><label for="answer-three">Babe's answer</label><input id="answer-three" type="text" autocomplete="off" required><button type="submit">Check your answer</button><p class="message" id="message-three" aria-live="polite"></p></form></section>
 
-    <section class="step" id="step-four" aria-labelledby="task-four" hidden><p class="step-label">Task 1</p><h2 class="riddle" id="task-four">Babe's task: hug someone to get the next location address</h2><div class="timer-controls" id="task-four-timer" hidden><p class="timer" id="task-timer" role="timer" aria-live="polite">45:00</p><button type="button" id="task-early-button">Tell me the next task early</button></div><form id="task-early-form" hidden><label for="task-early-code">Ask for the code</label><input id="task-early-code" type="text" autocomplete="off" required><button type="submit">Unlock early</button><p class="message" id="task-early-message" aria-live="polite"></p></form><form id="answer-four-form" hidden><label for="answer-four">Babe's location answer</label><input id="answer-four" type="text" autocomplete="off" required><button type="submit">Reveal the surprise</button><p class="message" id="message-four" aria-live="polite"></p></form><div class="celebration" id="celebration" hidden><iframe src="https://tenor.com/embed/18749324" title="Happy cat sharing fish" loading="lazy" allowfullscreen></iframe></div></section>
+    <section class="step" id="step-four" aria-labelledby="task-four" hidden><p class="step-label">Task 1</p><h2 class="riddle" id="task-four">Babe's task: hug someone to get the next location address</h2><iframe src="https://tenor.com/embed/20311095" title="Two cats walking together" loading="lazy" allowfullscreen></iframe><div class="timer-controls" id="task-four-timer" hidden><p class="timer" id="task-timer" role="timer" aria-live="polite">45:00</p><button type="button" id="task-early-button">Tell me the next task early</button></div><form id="task-early-form" hidden><label for="task-early-code">Ask for the code</label><input id="task-early-code" type="text" autocomplete="off" required><button type="submit">Unlock early</button><p class="message" id="task-early-message" aria-live="polite"></p></form><form id="answer-four-form" hidden><label for="answer-four">Babe's location answer</label><input id="answer-four" type="text" autocomplete="off" required><button type="submit">Reveal the surprise</button><p class="message" id="message-four" aria-live="polite"></p></form><div class="celebration" id="celebration" hidden><iframe src="https://tenor.com/embed/18749324" title="Happy cat sharing fish" loading="lazy" allowfullscreen></iframe><iframe src="https://tenor.com/embed/20311095" title="Two cats walking together" loading="lazy" allowfullscreen></iframe></div></section>
 
     <section class="step" id="step-five" aria-labelledby="riddle-five" hidden><p class="step-label">Riddle 4</p><h2 class="riddle" id="riddle-five">What does this cute T-shirt say, and what Korean celebrity finger-heart pose is shown?</h2><div class="bridge-art" role="img" aria-label="A cute pink T-shirt with the word MODERN and a finger-heart hand gesture"><svg viewBox="0 0 220 230" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M65 25 91 12h38l26 13 43 34-24 35-23-15v126H39V79L16 94l-24-35 47-34 26 0Z" transform="translate(10 5)" fill="#ffb8cb" stroke="#d76b8b" stroke-width="5" stroke-linejoin="round"/><path d="M91 13c2 18 12 28 19 28s17-10 19-28" fill="#fff4f5" stroke="#d76b8b" stroke-width="4"/><text x="110" y="116" text-anchor="middle" fill="#6c4660" font-family="Trebuchet MS, sans-serif" font-size="23" font-weight="700">MODERN</text><path d="M74 139c12-12 22-12 36 0 14-12 24-12 36 0-5 20-20 31-36 31s-31-11-36-31Z" fill="#fff4f5" stroke="#e88ca5" stroke-width="3"/><path d="m103 148 7 7 7-7" fill="none" stroke="#d8293f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="110" cy="155" r="3" fill="#d8293f"/></svg><span class="finger-heart" aria-hidden="true">🫰</span></div><p>Enter the location answer to continue.</p><form id="answer-five-form"><label for="answer-five">Babe's answer</label><input id="answer-five" type="text" autocomplete="off" required><button type="submit">Check your answer</button><p class="message" id="message-five" aria-live="polite"></p></form></section>
 
-    <section class="step" id="step-six" aria-labelledby="task-six" hidden><p class="step-label">Final task</p><h2 class="riddle" id="task-six">Babe's task: take a picture and ask for the next location</h2><form id="final-answer-form"><label for="final-answer">Final Location answer</label><input id="final-answer" type="text" autocomplete="off" required><button type="submit">Reveal the ending</button><p class="message" id="final-message" aria-live="polite"></p></form></section>
+    <section class="step" id="step-six" aria-labelledby="task-six" hidden><p class="step-label">Final task</p><h2 class="riddle" id="task-six">Babe's task: take a picture and ask for the next location</h2><iframe src="https://tenor.com/embed/20311095" title="Two cats walking together" loading="lazy" allowfullscreen></iframe><form id="final-answer-form"><label for="final-answer">Final Location answer</label><input id="final-answer" type="text" autocomplete="off" required><button type="submit">Reveal the ending</button><p class="message" id="final-message" aria-live="polite"></p></form></section>
   </main>
 
   <button class="emergency-button" id="emergency-button" type="button" aria-expanded="false" aria-controls="emergency-panel">Emergency</button>
   <section class="emergency-panel" id="emergency-panel" aria-label="Emergency test unlock" hidden><p><strong>Unlock the next question or task</strong></p><p>Use “random act of love” or a step code like “random act of love - r4”.</p><form id="emergency-form"><label for="emergency-code">Emergency code</label><input id="emergency-code" type="text" autocomplete="off" required><button type="submit">Show next</button><p class="message" id="emergency-message" aria-live="polite"></p></form></section>
-
   <section id="celebration-scene" aria-label="Congratulations" aria-live="polite" hidden><div class="night-stars" aria-hidden="true"></div><canvas id="fireworks" aria-hidden="true"></canvas><h2 class="love-title">Random Acts of Love</h2></section>
 
   <script>
     const bestCut = { latitude: 47.31250324218141, longitude: 8.525313544559133 };
     const bridge = { latitude: 47.3789893011236, longitude: 8.533852655245003 };
-    const arrivalRadiusMeters = 20;
-    const maxGpsAccuracyMeters = 50;
-    const taskDelaySeconds = 45 * 60;
+    const arrivalRadiusMeters = 20, maxGpsAccuracyMeters = 50, taskDelaySeconds = 45 * 60;
     const stepIds = ["step-one", "step-two", "step-three", "step-four", "step-five", "step-six"];
     const stepCodeTargets = { r1: "step-two", r2: "step-three", r3: "step-four", r4: "step-five", r5: "step-six" };
     let bestCutWatchId = null, bridgeWatchId = null, taskTimerId = null, taskUnlockAt = null;
@@ -104,60 +92,46 @@
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       if (!AudioContext) return;
       const audio = new AudioContext(), oscillator = audio.createOscillator(), gain = audio.createGain(), now = audio.currentTime;
-      oscillator.type = "sine"; oscillator.frequency.setValueAtTime(240, now); oscillator.frequency.exponentialRampToValueAtTime(130, now + 0.3);
-      gain.gain.setValueAtTime(0.0001, now); gain.gain.exponentialRampToValueAtTime(0.18, now + 0.02); gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
-      oscillator.connect(gain); gain.connect(audio.destination); oscillator.start(now); oscillator.stop(now + 0.36); oscillator.addEventListener("ended", () => audio.close(), { once: true });
+      oscillator.type = "sine"; oscillator.frequency.setValueAtTime(240, now); oscillator.frequency.exponentialRampToValueAtTime(130, now + .3);
+      gain.gain.setValueAtTime(.0001, now); gain.gain.exponentialRampToValueAtTime(.18, now + .02); gain.gain.exponentialRampToValueAtTime(.0001, now + .35);
+      oscillator.connect(gain); gain.connect(audio.destination); oscillator.start(now); oscillator.stop(now + .36); oscillator.addEventListener("ended", () => audio.close(), { once: true });
     }
-
     function distanceMeters(lat1, lon1, lat2, lon2) {
       const rad = value => value * Math.PI / 180, dLat = rad(lat2 - lat1), dLon = rad(lon2 - lon1);
       const a = Math.sin(dLat / 2) ** 2 + Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dLon / 2) ** 2;
       return 6371000 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
-
     function revealStep(id, focusId) {
       const step = document.getElementById(id);
       if (!step || !step.hidden) return false;
-      step.hidden = false;
-      step.scrollIntoView({ behavior: "smooth", block: "start" });
+      step.hidden = false; step.scrollIntoView({ behavior: "smooth", block: "start" });
       if (focusId) document.getElementById(focusId)?.focus();
       return true;
     }
-
     function revealNextTask() {
       if (nextTaskUnlocked) return;
       nextTaskUnlocked = true;
       if (taskTimerId !== null) { clearInterval(taskTimerId); taskTimerId = null; }
-      document.getElementById("task-four-timer").hidden = true;
-      document.getElementById("task-early-form").hidden = true;
-      document.getElementById("answer-four-form").hidden = false;
-      document.getElementById("answer-four").focus();
+      document.getElementById("task-four-timer").hidden = true; document.getElementById("task-early-form").hidden = true;
+      document.getElementById("answer-four-form").hidden = false; document.getElementById("answer-four").focus();
     }
-
     function updateTaskTimer() {
       if (taskUnlockAt === null || nextTaskUnlocked) return;
       const remaining = Math.max(0, Math.ceil((taskUnlockAt - Date.now()) / 1000));
       document.getElementById("task-timer").textContent = `${String(Math.floor(remaining / 60)).padStart(2, "0")}:${String(remaining % 60).padStart(2, "0")}`;
       if (remaining === 0) revealNextTask();
     }
-
     function startTaskTimer() {
       if (taskUnlockAt !== null) return;
-      taskUnlockAt = Date.now() + taskDelaySeconds * 1000;
-      document.getElementById("task-four-timer").hidden = false;
-      updateTaskTimer();
-      taskTimerId = setInterval(updateTaskTimer, 1000);
+      taskUnlockAt = Date.now() + taskDelaySeconds * 1000; document.getElementById("task-four-timer").hidden = false;
+      updateTaskTimer(); taskTimerId = setInterval(updateTaskTimer, 1000);
     }
-
     function watchDestination(destination, statusElement, onArrival, isBridge = false) {
       if (!navigator.geolocation) { statusElement.textContent = "Location tracking isn't available in this browser. Enable location services and try again."; return null; }
       statusElement.textContent = "Waiting for your location…";
       return navigator.geolocation.watchPosition(position => {
         const accuracy = position.coords.accuracy;
-        if (accuracy > maxGpsAccuracyMeters) {
-          if (isBridge) statusElement.textContent = `Heading to the Bridge… waiting for a clearer GPS fix (±${Math.round(accuracy)} m).`;
-          return;
-        }
+        if (accuracy > maxGpsAccuracyMeters) { if (isBridge) statusElement.textContent = `Heading to the Bridge… waiting for a clearer GPS fix (±${Math.round(accuracy)} m).`; return; }
         const distance = distanceMeters(position.coords.latitude, position.coords.longitude, destination.latitude, destination.longitude);
         if (distance <= arrivalRadiusMeters + accuracy) onArrival();
         else if (isBridge) statusElement.textContent = `Heading to the Bridge… about ${Math.round(distance)} m away.`;
@@ -166,22 +140,15 @@
         statusElement.textContent = errors[error.code] || "Couldn't access your location.";
       }, { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 });
     }
-
     function advanceEmergency(code) {
-      const normalized = code.trim().toLowerCase();
-      const match = normalized.match(/^random act of love\s*-\s*(r[1-5])$/);
+      const normalized = code.trim().toLowerCase(), match = normalized.match(/^random act of love\s*-\s*(r[1-5])$/);
       let target = match ? stepCodeTargets[match[1]] : null;
       if (normalized !== "random act of love" && !target) return false;
       if (!target) target = stepIds.find(id => id !== "step-one" && document.getElementById(id).hidden);
       if (!target) return false;
       const focusByStep = { "step-two": "answer-two", "step-three": "answer-three", "step-four": null, "step-five": "answer-five", "step-six": "final-answer" };
       const revealed = revealStep(target, focusByStep[target]);
-      if (target === "step-four") {
-        document.getElementById("answer-four-form").hidden = false;
-        document.getElementById("task-four-timer").hidden = true;
-      }
-      if (target === "step-five") document.getElementById("answer-five").focus();
-      if (target === "step-six") document.getElementById("final-answer").focus();
+      if (target === "step-four") { document.getElementById("answer-four-form").hidden = false; document.getElementById("task-four-timer").hidden = true; }
       return revealed;
     }
 
@@ -190,7 +157,6 @@
       if (document.getElementById("answer-one").value.trim().toLowerCase() === "oh really really") { message.textContent = "Wowowow, babe's correct, nicely done wow."; message.classList.add("success"); revealStep("step-two", "answer-two"); }
       else { message.textContent = "Not quite—try again, babe."; message.classList.remove("success"); playWrongAnswerSound(); }
     });
-
     document.getElementById("answer-two-form").addEventListener("submit", event => {
       event.preventDefault(); const message = document.getElementById("message-two"), answer = document.getElementById("answer-two").value.trim().toLowerCase().replace(/\s+/g, " ");
       if (answer === "8g6g+x4 adliswil") {
@@ -198,12 +164,10 @@
         document.getElementById("map-link").hidden = false; document.getElementById("walking").hidden = false;
         bestCutWatchId = watchDestination(bestCut, document.getElementById("location-status"), () => {
           if (bestCutWatchId !== null) { navigator.geolocation.clearWatch(bestCutWatchId); bestCutWatchId = null; }
-          document.getElementById("location-status").textContent = "You've arrived at Best Cut! Here's the next riddle.";
-          revealStep("step-three", "answer-three");
+          document.getElementById("location-status").textContent = "You've arrived at Best Cut! Here's the next riddle."; revealStep("step-three", "answer-three");
         });
       } else { message.textContent = "Hmm, not quite—try again, babe."; message.classList.remove("success"); playWrongAnswerSound(); }
     });
-
     document.getElementById("answer-three-form").addEventListener("submit", event => {
       event.preventDefault(); const message = document.getElementById("message-three");
       if (document.getElementById("answer-three").value.trim().toLowerCase() === "selnau") {
@@ -211,14 +175,12 @@
         if (!selnauSolved) { selnauSolved = true; revealStep("step-four", null); startTaskTimer(); }
       } else { message.textContent = "Not quite—try again, babe ahihi!"; message.classList.remove("success"); playWrongAnswerSound(); }
     });
-
     document.getElementById("task-early-button").addEventListener("click", () => { document.getElementById("task-early-form").hidden = false; document.getElementById("task-early-code").focus(); });
     document.getElementById("task-early-form").addEventListener("submit", event => {
       event.preventDefault(); const message = document.getElementById("task-early-message");
       if (document.getElementById("task-early-code").value.trim().toLowerCase() === "first of all") { message.textContent = "That's the code! Here's the next task early, babe."; message.classList.add("success"); revealNextTask(); }
       else { message.textContent = "That's not the code—try again, babe."; message.classList.remove("success"); playWrongAnswerSound(); }
     });
-
     document.getElementById("answer-four-form").addEventListener("submit", event => {
       event.preventDefault(); const message = document.getElementById("message-four");
       if (document.getElementById("answer-four").value.trim().toLowerCase() === "bridge") {
@@ -230,59 +192,35 @@
         else if (!navigator.geolocation) message.textContent = "Location tracking isn't available in this browser, babe.";
       } else { message.textContent = "Not quite—try again, babe."; message.classList.remove("success"); playWrongAnswerSound(); }
     });
-
     document.getElementById("answer-five-form").addEventListener("submit", event => {
       event.preventDefault(); const message = document.getElementById("message-five");
       if (document.getElementById("answer-five").value.trim().toLowerCase() === "paopao") { message.textContent = "Wowowow, babe's correct, nicely done wow."; message.classList.add("success"); revealStep("step-six", "final-answer"); }
       else { message.textContent = "Not quite—try again, babe."; message.classList.remove("success"); playWrongAnswerSound(); }
     });
-
     document.getElementById("emergency-button").addEventListener("click", () => {
-      const panel = document.getElementById("emergency-panel"); panel.hidden = !panel.hidden;
-      document.getElementById("emergency-button").setAttribute("aria-expanded", String(!panel.hidden));
+      const panel = document.getElementById("emergency-panel"); panel.hidden = !panel.hidden; document.getElementById("emergency-button").setAttribute("aria-expanded", String(!panel.hidden));
       if (!panel.hidden) document.getElementById("emergency-code").focus();
     });
     document.getElementById("emergency-form").addEventListener("submit", event => {
       event.preventDefault(); const message = document.getElementById("emergency-message");
-      if (advanceEmergency(document.getElementById("emergency-code").value)) {
-        message.textContent = "Got you, babe! The next question or task is ready."; message.classList.add("success");
-        document.getElementById("emergency-panel").hidden = true; document.getElementById("emergency-button").setAttribute("aria-expanded", "false");
-      } else { message.textContent = "That code didn't unlock a new step—check the code or try the next r-number, babe."; message.classList.remove("success"); playWrongAnswerSound(); }
+      if (advanceEmergency(document.getElementById("emergency-code").value)) { message.textContent = "Got you, babe! The next question or task is ready."; message.classList.add("success"); document.getElementById("emergency-panel").hidden = true; document.getElementById("emergency-button").setAttribute("aria-expanded", "false"); }
+      else { message.textContent = "That code didn't unlock a new step—check the code or try the next r-number, babe."; message.classList.remove("success"); playWrongAnswerSound(); }
     });
-
     document.getElementById("final-answer-form").addEventListener("submit", event => {
       event.preventDefault(); const answer = document.getElementById("final-answer").value.trim().toLowerCase(), message = document.getElementById("final-message");
-      if (answer === "next to me") {
-        message.textContent = "Wowowow, babe's correct, nicely done wow."; message.classList.add("success");
-        if (!celebrationStarted) { celebrationStarted = true; document.body.classList.add("celebrating"); window.setTimeout(showCelebration, 1350); }
-      } else if (answer === "the past") { message.textContent = "ahihi nice try. It's an accepted answer but it's not what I have in mind"; message.classList.remove("success"); }
+      if (answer === "next to me") { message.textContent = "Wowowow, babe's correct, nicely done wow."; message.classList.add("success"); if (!celebrationStarted) { celebrationStarted = true; document.body.classList.add("celebrating"); setTimeout(showCelebration, 1350); } }
+      else if (answer === "the past") { message.textContent = "ahihi nice try. It's an accepted answer but it's not what I have in mind"; message.classList.remove("success"); }
       else { message.textContent = "also an accepted answer but it's not what I have in mind"; message.classList.remove("success"); }
     });
-
-    function showCelebration() {
-      const scene = document.getElementById("celebration-scene"); scene.hidden = false;
-      requestAnimationFrame(() => scene.classList.add("visible"));
-      launchFireworks();
-    }
-
+    function showCelebration() { const scene = document.getElementById("celebration-scene"); scene.hidden = false; requestAnimationFrame(() => scene.classList.add("visible")); launchFireworks(); }
     function launchFireworks() {
       const canvas = document.getElementById("fireworks"), context = canvas.getContext("2d");
       const resize = () => { const scale = window.devicePixelRatio || 1; canvas.width = window.innerWidth * scale; canvas.height = window.innerHeight * scale; context.setTransform(scale, 0, 0, scale, 0, 0); };
       resize(); window.addEventListener("resize", resize);
-      const colors = ["#e84a70", "#f4b942", "#805ad5", "#38a3a5", "#ff7b54", "#fff2bd"];
-      const particles = [];
-      function burst() {
-        const x = window.innerWidth * (.12 + Math.random() * .76), y = window.innerHeight * (.12 + Math.random() * .58);
-        for (let i = 0; i < 55; i++) { const angle = Math.PI * 2 * i / 55, speed = 1.1 + Math.random() * 4.5; particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: 75 + Math.random() * 35, color: colors[Math.floor(Math.random() * colors.length)] }); }
-      }
+      const colors = ["#e84a70", "#f4b942", "#805ad5", "#38a3a5", "#ff7b54", "#fff2bd"], particles = [];
+      function burst() { const x = window.innerWidth * (.12 + Math.random() * .76), y = window.innerHeight * (.12 + Math.random() * .58); for (let i = 0; i < 55; i++) { const angle = Math.PI * 2 * i / 55, speed = 1.1 + Math.random() * 4.5; particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: 75 + Math.random() * 35, color: colors[Math.floor(Math.random() * colors.length)] }); } }
       let frame = 0;
-      function animate() {
-        context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        if (frame % 42 === 0) burst();
-        for (const p of particles) { if (p.life <= 0) continue; p.x += p.vx; p.y += p.vy; p.vy += .025; p.life--; context.globalAlpha = Math.min(1, p.life / 24); context.fillStyle = p.color; context.beginPath(); context.arc(p.x, p.y, 2.5, 0, Math.PI * 2); context.fill(); }
-        context.globalAlpha = 1; frame++;
-        if (!document.hidden) requestAnimationFrame(animate);
-      }
+      function animate() { context.clearRect(0, 0, window.innerWidth, window.innerHeight); if (frame % 42 === 0) burst(); for (const p of particles) { if (p.life <= 0) continue; p.x += p.vx; p.y += p.vy; p.vy += .025; p.life--; context.globalAlpha = Math.min(1, p.life / 24); context.fillStyle = p.color; context.beginPath(); context.arc(p.x, p.y, 2.5, 0, Math.PI * 2); context.fill(); } context.globalAlpha = 1; frame++; if (!document.hidden) requestAnimationFrame(animate); }
       requestAnimationFrame(animate);
     }
   </script>
